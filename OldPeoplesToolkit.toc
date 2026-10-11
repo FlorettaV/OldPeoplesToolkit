@@ -1,7 +1,7 @@
 ## Interface: 16001
 ## Title: Old People's Toolkit
 ## Notes: Tools for old people with responsibilities and sore bones: a "where was I?" message at start, automated quiet hours, a stretch reminder, a clock with an alarm, and bedtime. With pretend buffs and debuffs.
-## Author: Flori
+## Author: Floris
 ## Version: 0.9.0
 ## IconTexture: Interface\Icons\INV_Misc_PocketWatch_01
 ## SavedVariables: OldPeoplesToolkitDB
