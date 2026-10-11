@@ -2,17 +2,19 @@
 -- their defaults) and the ways we write times.
 --
 -- The tools, one file each:
+--   WhereWasI.lua   after a while away: where you were, your quests and your bags
+--   QuietHours.lua  turns the volume down at night
+--   Stretch.lua     Old People's Stretch, the stretch reminder
 --   Clock.lua       the clock (and hiding Blizzard's small minimap clock)
 --   Alarm.lua       "I've got 15 minutes" / "I can play until 22:30"
---   Stretch.lua     Old People's Stretch, the stretch reminder
 --   Bedtime.lua     a heads-up and "Past Your Bedtime" on work nights
---   QuietHours.lua  turns the volume down at night
---   WhereWasI.lua   after a while away: where you were, your quests and your bags
 -- Shared by them:
 --   Auras.lua    pretend buffs and debuffs next to your real ones
 --   Minimap.lua, Options.lua, Commands.lua
 
 local ADDON_NAME, ns = ...
+-- For helper addons that aren't released, like OldPeoplesToolkit_Screenshots.
+OldPeoplesToolkit_Internal = ns
 
 -- Everything saved in OldPeoplesToolkitDB. Each tool's comments explain its part.
 local defaults = {

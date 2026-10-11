@@ -10,7 +10,7 @@
 - **Old People's Stretch** has a new buff. You start out **Fresh as a Daisy**,
   and now you have to *earn* your **Second Wind** by stretching. (It used to
   be Spring in Your Step, and it was there from the start.)
-- New option: **Replace Blizzard's minimap clock** (Clock and alarm).
+- New option: **Replace the minimap clock** (Clock and alarm).
 
 **Changed**
 - The pretend buffs and debuffs now read like real ones: what they "do", then
@@ -20,6 +20,8 @@
 - Times are rounded up, so you never see "0 minutes" anymore.
 - Friendlier chat messages ("shh, the house is asleep", "good morning!").
 - One set of colors everywhere. Anything you can click or type is blue.
+- The options have a page per tool, under Old People's Toolkit in the list on
+  the left. The main page has the minimap button.
 - Settings now live in the options only (`/oldperson`). These commands are
   gone: `stretch on/off/every/snooze/wait`, `bedtime on/off/weekends`,
   `quiet on/off`, `clock`, `clock blizzard` and `minimap`. The commands for

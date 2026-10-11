@@ -226,8 +226,27 @@ local function QuestLines(questID)
 	return lines
 end
 
+-- For the test window when you haven't farmed anything lately: what it
+-- looks like when you have. A plain name if the game hasn't loaded the item yet.
+local EXAMPLE_GAINS = {
+	{ id = 6265, name = "Soul Shard", count = 10 },
+	{ id = 3730, name = "Big Bear Meat", count = 5 },
+}
+
+local function ExampleGains()
+	local list = {}
+	for _, example in ipairs(EXAMPLE_GAINS) do
+		local ok, _, link = pcall(C_Item.GetItemInfo, example.id)
+		if not (ok and ns.Usable(link)) then link = WHITE .. "[" .. example.name .. "]|r" end
+		table.insert(list, { id = example.id, link = link, count = example.count })
+	end
+	return list
+end
+
 -- away: seconds since you last played, or nil to say where you are now.
-local function WindowText(away)
+-- ending: when that session ended (your last logout, or now).
+-- test: show example items if there's nothing real.
+local function WindowText(away, ending, test)
 	local lines = {}
 	local where = char.zone and (char.subZone and (char.subZone .. ", " .. char.zone) or char.zone)
 	if away then
@@ -240,7 +259,8 @@ local function WindowText(away)
 	table.insert(lines, " ")
 
 	local quests = RecentQuests()
-	local gains = TopGains(away and lastSession or time())
+	local gains = TopGains(ending)
+	if test and #gains == 0 then gains = ExampleGains() end
 	if #quests == 0 and #gains == 0 then
 		table.insert(lines, GREY .. "Nothing on your plate. A fresh start!" .. "|r")
 	end
@@ -284,9 +304,9 @@ local function CreateWindow()
 	ok:SetScript("OnClick", function() window:Hide() end)
 end
 
-local function ShowWindow(away)
+local function ShowWindow(away, ending, test)
 	if not window then CreateWindow() end
-	window.text:SetText(WindowText(away))
+	window.text:SetText(WindowText(away, ending, test))
 	-- Top border, title, text, button, bottom border.
 	window:SetHeight(24 + 24 + 8 + window.text:GetStringHeight() + 16 + 24 + 22)
 	window:Show()
@@ -305,7 +325,7 @@ function ns.ShowWhereWasI(test)
 	RememberWhere()
 	OnQuestLogChanged()
 	OnBagsChanged()
-	ShowWindow(test and TEST_AWAY or nil)
+	ShowWindow(test and TEST_AWAY or nil, time(), test) -- the test: as if you logged out just now
 end
 
 local events = CreateFrame("Frame")
@@ -331,7 +351,7 @@ events:SetScript("OnEvent", function(_, event, arg)
 		C_Timer.After(5, function()
 			ready = true
 			OnQuestLogChanged()
-			if db.enabled and awayFor and awayFor >= db.awayHours * 3600 then ShowWindow(awayFor) end
+			if db.enabled and awayFor and awayFor >= db.awayHours * 3600 then ShowWindow(awayFor, lastSession) end
 			-- The starting count, after the window: it also forgets gains older
 			-- than half an hour, like the ones from last time.
 			OnBagsChanged()

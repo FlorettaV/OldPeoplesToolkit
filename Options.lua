@@ -1,38 +1,53 @@
--- Options: the addon's page in the game's options (Esc > Options > AddOns >
--- Old People's Toolkit), with a heading per tool. Everything writes straight
--- into OldPeoplesToolkitDB, and the tools read from there every time, so a
--- change counts right away.
+-- Options: the addon's pages in the game's options (Esc > Options > AddOns >
+-- Old People's Toolkit). The main page has the toolkit's own settings, and
+-- each tool has a page of its own under it. Everything writes straight into
+-- OldPeoplesToolkitDB, and the tools read from there every time, so a change
+-- counts right away.
 
 local _, ns = ...
 
-local category, layout
+local category, layout -- the main page
+local page -- the page the settings below go on
+local pages = {} -- [tool] = its page, for ns.OpenOptions
 
--- A heading on the options page. Skipped quietly if the game doesn't have them.
+-- A heading on the main page. Skipped quietly if the game doesn't have them.
 local function Heading(text)
 	if layout and CreateSettingsListSectionHeaderInitializer then
 		layout:AddInitializer(CreateSettingsListSectionHeaderInitializer(text))
 	end
 end
 
+-- Starts a tool's own page. If the game can't do pages under pages, the
+-- tool gets a heading on the main page instead.
+local function Page(tool, name)
+	if Settings.RegisterVerticalLayoutSubcategory then
+		page = Settings.RegisterVerticalLayoutSubcategory(category, name)
+	else
+		page = category
+		Heading(name)
+	end
+	pages[tool] = page
+end
+
 -- section: the part of OldPeoplesToolkitDB, like "stretch". The default comes
 -- from Core.lua. onChange: optional, called after a change.
 local function Checkbox(section, key, name, tooltip, onChange)
 	local variable = "OldPeoplesToolkit_" .. section .. "_" .. key
-	local setting = Settings.RegisterAddOnSetting(category, variable, key, OldPeoplesToolkitDB[section],
+	local setting = Settings.RegisterAddOnSetting(page, variable, key, OldPeoplesToolkitDB[section],
 		Settings.VarType.Boolean, name, ns.DEFAULTS[section][key])
 	local CreateCheckbox = Settings.CreateCheckbox or Settings.CreateCheckBox -- renamed in The War Within
-	CreateCheckbox(category, setting, tooltip)
+	CreateCheckbox(page, setting, tooltip)
 	if onChange then Settings.SetOnValueChangedCallback(variable, onChange) end
 end
 
 -- limits: { lowest, highest }. Label(value): how the value is shown, like "23:00".
 local function Slider(section, key, name, limits, step, Label, tooltip, onChange)
 	local variable = "OldPeoplesToolkit_" .. section .. "_" .. key
-	local setting = Settings.RegisterAddOnSetting(category, variable, key, OldPeoplesToolkitDB[section],
+	local setting = Settings.RegisterAddOnSetting(page, variable, key, OldPeoplesToolkitDB[section],
 		Settings.VarType.Number, name, ns.DEFAULTS[section][key])
 	local options = Settings.CreateSliderOptions(limits[1], limits[2], step)
 	options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, Label)
-	Settings.CreateSlider(category, setting, options, tooltip)
+	Settings.CreateSlider(page, setting, options, tooltip)
 	if onChange then Settings.SetOnValueChangedCallback(variable, onChange) end
 end
 
@@ -45,23 +60,37 @@ local function Register()
 	category, layout = Settings.RegisterVerticalLayoutCategory("Old People's Toolkit")
 	local db = OldPeoplesToolkitDB
 
-	Heading("Clock and alarm")
-	-- Off for people who only want the other tools.
-	Checkbox("clock", "show", "Show the clock",
-		"A bigger clock with an alarm, that you can put anywhere.",
-		function() ns.SetClockShown(db.clock.show) end)
-	Checkbox("clock", "hideBlizzardClock", "Replace Blizzard's minimap clock",
-		"While our clock is showing, Blizzard's small clock on the minimap is hidden.",
-		ns.ApplyBlizzardClock)
-	Checkbox("alarm", "showDebuff", "Show the alarm as a debuff",
-		"While an alarm is set, \"Responsibilities\" sits with your debuffs and counts down. "
-			.. "Right-click it to clear the alarm.",
-		ns.UpdateAuras)
+	page = category
+	Checkbox("minimapButton", "show", "Show the minimap button",
+		"The little pocket watch on the minimap, which opens these options.",
+		function() ns.SetMinimapButtonShown(db.minimapButton.show) end)
 
-	Heading("Old People's Stretch")
+	Page("whereami", "Where was I?")
+	Checkbox("whereWasI", "enabled", "Enabled",
+		"Helps you remember what you were doing before! After a while away, a window tells you when and "
+			.. "where you last played, your quests, and what your bags were filling up with.")
+	Slider("whereWasI", "awayHours", "When I've been away for", ns.WHERE_LIMITS, 1, Hours,
+		"/oldperson whereami shows it any time.")
+
+	Page("quiet", "Quiet hours")
+	Checkbox("quiet", "enabled", "Enabled",
+		"Shh, the house is asleep! WoW's volume goes down at night and back up in the morning. "
+			.. "If you change the volume yourself in between, that's left alone.",
+		ns.CheckQuietHours)
+	Checkbox("quiet", "showBuff", "Show quiet hours as a buff",
+		"\"Earmuffs\" while the volume is down. Right-click them to skip quiet hours for tonight.",
+		ns.UpdateAuras)
+	Slider("quiet", "start", "From", ns.QUIET_LIMITS.start, 15, ns.MinutesText, nil, ns.CheckQuietHours)
+	Slider("quiet", "stop", "Until", ns.QUIET_LIMITS.stop, 15, ns.MinutesText,
+		"The next morning.", ns.CheckQuietHours)
+	Slider("quiet", "volume", "Volume during quiet hours", ns.QUIET_LIMITS.volume, 5, Percent,
+		"Of the full volume. Off mutes the game.", ns.CheckQuietHours)
+
+	Page("stretch", "Old People's Stretch")
 	-- Turning it back on starts the time over, so it doesn't pop up right away.
 	Checkbox("stretch", "enabled", "Enabled",
-		"A pop-up that reminds you to stand up and get those old bones moving.",
+		"Your back will thank you! After a while of playing, a pop-up reminds you to stand up and get "
+			.. "those old bones moving.",
 		function() ns.SetStretchEnabled(db.stretch.enabled) end)
 	Checkbox("stretch", "showBuff", "Show the stretch timer as a buff",
 		"Fresh as a Daisy when you start playing, Second Wind after you've stretched, "
@@ -74,49 +103,39 @@ local function Register()
 	Slider("stretch", "waitSeconds", "Stretch button unlocks after", ns.STRETCH_LIMITS.waitSeconds, 1, Seconds,
 		"\"I stood up and stretched\" stays greyed out this long, so you actually stretch first. 0 turns it off.")
 
-	Heading("Bedtime")
+	Page("alarm", "Clock and alarm")
+	-- Off for people who only want the other tools.
+	Checkbox("clock", "show", "Show the clock",
+		"Never lose track of time again! A bigger clock with an alarm, that you can put anywhere.",
+		function() ns.SetClockShown(db.clock.show) end)
+	Checkbox("clock", "hideBlizzardClock", "Replace the minimap clock",
+		"While our clock is showing, Blizzard's small clock on the minimap is hidden.",
+		ns.ApplyBlizzardClock)
+	Checkbox("alarm", "showDebuff", "Show the alarm as a debuff",
+		"While an alarm is set, \"Responsibilities\" sits with your debuffs and counts down. "
+			.. "Right-click it to clear the alarm.",
+		ns.UpdateAuras)
+
+	Page("bedtime", "Bedtime")
 	Checkbox("bedtime", "enabled", "Enabled",
-		"A heads-up 15 minutes before your bedtime, and a reminder when it's time.",
+		"Because tomorrow is a work day! A heads-up 15 minutes before your bedtime, and a reminder when it's time.",
 		ns.UpdateAuras)
 	Slider("bedtime", "minutes", "Bedtime", ns.BEDTIME_LIMITS, 15, ns.MinutesText,
 		"On work nights: Sunday to Thursday.", ns.UpdateAuras)
 	Checkbox("bedtime", "weekends", "Weekends too",
-		"Also on Friday and Saturday night.", ns.UpdateAuras)
+		"Also on Friday and Saturday night. No exceptions!", ns.UpdateAuras)
 	Checkbox("bedtime", "showDebuff", "Show bedtime as a debuff",
 		"\"Past Your Bedtime\" sits with your debuffs until morning. Right-click it to hide it for tonight.",
 		ns.UpdateAuras)
 
-	Heading("Quiet hours")
-	Checkbox("quiet", "enabled", "Enabled",
-		"Turns WoW's volume down at night, so you don't wake the house, and back up in the morning. "
-			.. "If you change the volume yourself in between, that's left alone.",
-		ns.CheckQuietHours)
-	Checkbox("quiet", "showBuff", "Show quiet hours as a buff",
-		"\"Earmuffs\" while the volume is down. Right-click them to skip quiet hours for tonight.",
-		ns.UpdateAuras)
-	Slider("quiet", "start", "From", ns.QUIET_LIMITS.start, 15, ns.MinutesText, nil, ns.CheckQuietHours)
-	Slider("quiet", "stop", "Until", ns.QUIET_LIMITS.stop, 15, ns.MinutesText,
-		"The next morning.", ns.CheckQuietHours)
-	Slider("quiet", "volume", "Volume during quiet hours", ns.QUIET_LIMITS.volume, 5, Percent,
-		"Of the full volume. Off mutes the game.", ns.CheckQuietHours)
-
-	Heading("Where was I?")
-	Checkbox("whereWasI", "enabled", "Enabled",
-		"After a while away: when and where you last played, and the quests you were busy with.")
-	Slider("whereWasI", "awayHours", "When I've been away for", ns.WHERE_LIMITS, 1, Hours,
-		"/oldperson whereami shows it any time.")
-
-	Heading("Toolkit")
-	Checkbox("minimapButton", "show", "Show the minimap button",
-		"A round button on the minimap that opens these options.",
-		function() ns.SetMinimapButtonShown(db.minimapButton.show) end)
-
 	Settings.RegisterAddOnCategory(category)
 end
 
-function ns.OpenOptions()
+-- tool: optional, open that tool's page ("whereami", "quiet", "stretch",
+-- "alarm", "bedtime") instead of the main page.
+function ns.OpenOptions(tool)
 	if category then
-		Settings.OpenToCategory(category:GetID())
+		Settings.OpenToCategory((pages[tool] or category):GetID())
 	else
 		ns.Print("the options page isn't available.")
 	end

@@ -4,7 +4,7 @@
 --   "I stood up and stretched" -> the timer starts over
 -- It never pops up during a fight; it waits until the fight is over.
 -- Logging out for a while counts as a break too.
--- The times can be changed in Options > AddOns > Old People's Toolkit.
+-- The times can be changed in Options > AddOns > Old People's Toolkit > Old People's Stretch.
 -- With "Show the stretch timer as a buff", a buff sits with your buffs: "Fresh
 -- as a Daisy" when you just started playing, "Second Wind" once you've
 -- stretched. When it's time to stretch it turns into the debuff "Stiff Joints".

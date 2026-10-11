@@ -7,20 +7,19 @@ local _, ns = ...
 -- own icons is an extra, only in the README.
 local HELP = {
 	{ "/oldperson", "open the options" },
-	"Old People's Stretch",
-	{ "/oldperson stretch test", "show the stretch pop-up now" },
-	{ "/oldperson stretch done", "I stood up and stretched: start the timer over" },
-	"Alarm",
-	{ "/oldperson alarm 15", "alarm in 15 minutes (or 1h30)" },
-	{ "/oldperson alarm 22:30", "alarm at 22:30 (or 10pm)" },
-	{ "/oldperson alarm off", "clear the alarm" },
-	"Bedtime",
-	{ "/oldperson bedtime 23:30", "set your bedtime" },
 	"Where was I?",
 	{ "/oldperson whereami", "where you are, your quests, and what your bags are filling up with" },
 	{ "/oldperson whereami test", "the welcome-back window, as if you'd been away 3 days" },
-	"Clock",
+	"Old People's Stretch",
+	{ "/oldperson stretch test", "show the stretch pop-up now" },
+	{ "/oldperson stretch done", "I stood up and stretched: start the timer over" },
+	"Clock and alarm",
+	{ "/oldperson alarm 15", "alarm in 15 minutes (or 1h30)" },
+	{ "/oldperson alarm 22:30", "alarm at 22:30 (or 10pm)" },
+	{ "/oldperson alarm off", "clear the alarm" },
 	{ "/oldperson clock reset", "move the clock back to the top, at the normal size" },
+	"Bedtime",
+	{ "/oldperson bedtime 23:30", "set your bedtime" },
 }
 
 local function Help()
