@@ -8,7 +8,8 @@
   making. Had to stop in a hurry? It's waiting for you next time. Closed up
   shop properly? Then there's nothing to remind you of.
 - **Old People's Stretch** has a new buff. You start out **Fresh as a Daisy**,
-  and now you have to *earn* **Spring in Your Step** by stretching.
+  and now you have to *earn* your **Second Wind** by stretching. (It used to
+  be Spring in Your Step, and it was there from the start.)
 - New option: **Replace Blizzard's minimap clock** (Clock and alarm).
 
 **Changed**

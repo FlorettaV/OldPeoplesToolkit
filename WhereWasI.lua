@@ -14,7 +14,7 @@ local _, ns = ...
 
 local SHOW_QUESTS = 3 -- how many recent quests the window lists
 local GAINS_WINDOW = 30 * 60 -- what you gained in the last 30 minutes before logging out
-local GAINS_MIN = 10 -- at least this many of one item, or it's not farming
+local GAINS_PICKUPS = 4 -- picked up at least this many separate times, or it's not farming
 local SHOW_ITEMS = 2 -- how many items the window lists
 ns.WHERE_LIMITS = { 1, 48 } -- the options slider: away for 1 to 48 hours
 
@@ -156,18 +156,23 @@ local function OnBagsChanged()
 end
 
 -- What you gained most of in the half hour before the end (your last logout,
--- or now): { { link, icon, count }, ... }, at most SHOW_ITEMS.
+-- or now): { { id, link, count }, ... }, at most SHOW_ITEMS. Farming is
+-- picking the same thing up again and again, so one big handout (a quest
+-- reward of 10 potions) doesn't count, and 6 boar meat from 6 kills does.
 local function TopGains(ending)
-	local totals, links = {}, {}
+	local totals, pickups, links = {}, {}, {}
 	for _, gain in ipairs(char.gains) do
 		if gain.when >= ending - GAINS_WINDOW and gain.when <= ending then
 			totals[gain.id] = (totals[gain.id] or 0) + gain.count
+			pickups[gain.id] = (pickups[gain.id] or 0) + 1
 			links[gain.id] = gain.link or links[gain.id]
 		end
 	end
 	local list = {}
 	for itemID, count in pairs(totals) do
-		if count >= GAINS_MIN then table.insert(list, { id = itemID, link = links[itemID], count = count }) end
+		if pickups[itemID] >= GAINS_PICKUPS then
+			table.insert(list, { id = itemID, link = links[itemID], count = count })
+		end
 	end
 	table.sort(list, function(a, b) return a.count > b.count end)
 	for i = #list, SHOW_ITEMS + 1, -1 do list[i] = nil end

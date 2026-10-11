@@ -6,7 +6,7 @@
 -- Logging out for a while counts as a break too.
 -- The times can be changed in Options > AddOns > Old People's Toolkit.
 -- With "Show the stretch timer as a buff", a buff sits with your buffs: "Fresh
--- as a Daisy" when you just started playing, "Spring in Your Step" once you've
+-- as a Daisy" when you just started playing, "Second Wind" once you've
 -- stretched. When it's time to stretch it turns into the debuff "Stiff Joints".
 --
 -- Saved in OldPeoplesToolkitDB.stretch: enabled, intervalMinutes, snoozeMinutes,
@@ -211,10 +211,10 @@ function ns.StretchCommand(args)
 end
 
 ---------------------------------------------------------------------------
--- "Fresh as a Daisy", "Spring in Your Step" and "Stiff Joints" (drawn by Auras.lua)
+-- "Fresh as a Daisy", "Second Wind" and "Stiff Joints" (drawn by Auras.lua)
 ---------------------------------------------------------------------------
 
-ns.AddIconSlot("stretchBuff", "Spring in Your Step", 1386545) -- spell_priest_pontifex: a praying figure in golden light
+ns.AddIconSlot("stretchBuff", "Second Wind", 1386545) -- spell_priest_pontifex: a praying figure in golden light
 ns.AddIconSlot("stretchDebuff", "Stiff Joints", "Interface\\Icons\\INV_Misc_Head_Gnome_02") -- a gnome head, for fun
 
 ns.AddAura({
@@ -224,7 +224,7 @@ ns.AddAura({
 		if not s.enabled or not s.showBuff then return nil end
 		local remaining, overdue = Remaining()
 		if overdue then return true, "stretchDebuff", remaining end
-		-- The same icon either way, but you have to earn Spring in Your Step.
+		-- The same icon either way, but you have to earn your Second Wind.
 		return false, "stretchBuff", remaining, not s.stretched and "Fresh as a Daisy" or nil
 	end,
 	Tooltip = function(isDebuff, remaining)

@@ -22,7 +22,7 @@ Made for WoW: Forever.
 - "Remind me in 5 min", or "I stood up and stretched" (greyed out for a few
   seconds, so you actually stretch first).
 - Never during a fight. Logging out for 10 minutes or more counts as a break.
-- You start out **Fresh as a Daisy**, earn **Spring in Your Step** by stretching,
+- You start out **Fresh as a Daisy**, earn your **Second Wind** by stretching,
   and get **Stiff Joints** when it's time to stretch again.
 
 ### 🧭 Where was I?
@@ -83,7 +83,7 @@ For the tinkerers. Icon names come from [wowhead.com/icons](https://www.wowhead.
 
 | Command | What it does |
 |---|---|
-| `/oldperson stretch icon buff <name>` | Fresh as a Daisy and Spring in Your Step icon |
+| `/oldperson stretch icon buff <name>` | Fresh as a Daisy and Second Wind icon |
 | `/oldperson stretch icon debuff <name>` | Stiff Joints icon |
 | `/oldperson stretch icon reset` | both back to the default |
 | `/oldperson alarm icon <name>` | Responsibilities icon |

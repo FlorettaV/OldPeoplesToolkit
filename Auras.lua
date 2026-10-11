@@ -1,5 +1,5 @@
 -- Auras: pretend buffs and debuffs next to your real ones. The tools add their
--- own (Stretch.lua: Fresh as a Daisy / Spring in Your Step / Stiff Joints, Alarm.lua:
+-- own (Stretch.lua: Fresh as a Daisy / Second Wind / Stiff Joints, Alarm.lua:
 -- Responsibilities, Bedtime.lua: Past Your Bedtime, QuietHours.lua:
 -- Earmuffs); this file only draws and places them.
 --

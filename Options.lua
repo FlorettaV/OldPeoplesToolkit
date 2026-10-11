@@ -64,7 +64,7 @@ local function Register()
 		"A pop-up that reminds you to stand up and get those old bones moving.",
 		function() ns.SetStretchEnabled(db.stretch.enabled) end)
 	Checkbox("stretch", "showBuff", "Show the stretch timer as a buff",
-		"Fresh as a Daisy when you start playing, Spring in Your Step after you've stretched, "
+		"Fresh as a Daisy when you start playing, Second Wind after you've stretched, "
 			.. "Stiff Joints when it's time to stretch. Right-click it when you've stretched.",
 		ns.UpdateAuras)
 	Slider("stretch", "intervalMinutes", "Remind me every", ns.STRETCH_LIMITS.intervalMinutes, 1, Minutes,
