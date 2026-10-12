@@ -10,6 +10,9 @@ local HELP = {
 	"Where was I?",
 	{ "/oldperson whereami", "where you are, your quests, and what your bags are filling up with" },
 	{ "/oldperson whereami test", "the welcome-back window, as if you'd been away 3 days" },
+	"Scrolls of Remembering",
+	{ "/oldperson notes", "open your Scrolls of Remembering" },
+	{ "/oldperson notes <anything>", "write it down without opening the scroll" },
 	"Old People's Stretch",
 	{ "/oldperson stretch test", "show the stretch pop-up now" },
 	{ "/oldperson stretch done", "I stood up and stretched: start the timer over" },
@@ -77,10 +80,13 @@ end
 SLASH_OLDPEOPLESTOOLKIT1 = "/oldperson"
 SLASH_OLDPEOPLESTOOLKIT2 = "/opt"
 SlashCmdList.OLDPEOPLESTOOLKIT = function(msg)
-	msg = strtrim(msg or ""):lower()
+	local typed = strtrim(msg or "")
+	msg = typed:lower()
 	local tool, args = msg:match("^(%S*)%s*(.-)$")
 	if msg == "" or msg == "options" then
 		ns.OpenOptions()
+	elseif tool == "notes" then
+		ns.NotesCommand(typed:match("^%S+%s*(.-)$")) -- a note keeps your capitals
 	elseif tool == "stretch" then
 		Stretch(args)
 	elseif tool == "alarm" then

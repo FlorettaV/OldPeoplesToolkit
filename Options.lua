@@ -72,6 +72,13 @@ local function Register()
 	Slider("whereWasI", "awayHours", "When I've been away for", ns.WHERE_LIMITS, 1, Hours,
 		"/oldperson whereami shows it any time.")
 
+	Page("scrolls", "Scrolls of Remembering")
+	Checkbox("scrolls", "enabled", "Enabled",
+		"For everything you'll definitely forget! A notebook for what that meat is for, who someone told "
+			.. "you to find, or where you saw something odd. Each note remembers where you were standing. "
+			.. "It's tucked in your spellbook, or type /oldperson notes.",
+		function() ns.SetScrollsEnabled(db.scrolls.enabled) end)
+
 	Page("quiet", "Quiet hours")
 	Checkbox("quiet", "enabled", "Enabled",
 		"Shh, the house is asleep! WoW's volume goes down at night and back up in the morning. "
@@ -131,8 +138,8 @@ local function Register()
 	Settings.RegisterAddOnCategory(category)
 end
 
--- tool: optional, open that tool's page ("whereami", "quiet", "stretch",
--- "alarm", "bedtime") instead of the main page.
+-- tool: optional, open that tool's page ("whereami", "scrolls", "quiet",
+-- "stretch", "alarm", "bedtime") instead of the main page.
 function ns.OpenOptions(tool)
 	if category then
 		Settings.OpenToCategory((pages[tool] or category):GetID())

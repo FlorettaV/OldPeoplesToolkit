@@ -2,7 +2,8 @@
 -- small window tells you when and where you last played, which quests you
 -- were busy with, and what your bags were filling up with (farming meat,
 -- crafting bandages). Nothing to write down: it watches your quest log and
--- your bags.
+-- your bags. Under the window, on a scrap of parchment: your last scribble
+-- from the Scrolls of Remembering (Scrolls.lua), if you have one.
 --
 -- Saved in OldPeoplesToolkitDB.whereWasI: enabled, awayHours, and per
 -- character (by GUID: Forever characters can share a first name):
@@ -23,17 +24,13 @@ local awayFor -- seconds since you last played, at this login (nil: first time)
 local lastSession -- when you last played (char.lastSeen at this login)
 local lastLog -- the quest log as we last saw it: [questID] = its progress, as text
 local ready = false -- the quest log has had time to load after logging in
-local window
+local window, scrap
 
 ---------------------------------------------------------------------------
 -- Watching the quest log
 ---------------------------------------------------------------------------
 
-local function Safe(fn, ...)
-	if not fn then return nil end
-	local ok, result = pcall(fn, ...)
-	if ok and ns.Usable(result) then return result end
-end
+local Safe = ns.Safe
 
 -- Every quest in your log, with its progress written out, so we can see which
 -- ones changed: { [questID] = "8/12 Raptor Head;done" }.
@@ -302,6 +299,34 @@ local function CreateWindow()
 	ok:SetPoint("BOTTOM", 0, 22)
 	ok:SetText("Got it")
 	ok:SetScript("OnClick", function() window:Hide() end)
+
+	-- Your last scribble, tucked under the window.
+	scrap = CreateFrame("Frame", "OldPeoplesToolkitWhereWasIScrap", window)
+	scrap:SetWidth(360)
+	scrap:SetPoint("TOP", window, "BOTTOM", 0, 2)
+	ns.Parchment(scrap)
+	local ability = ns.AbilityButton(scrap, 30)
+	ability:SetPoint("TOPLEFT", 12, -12)
+	scrap.text = scrap:CreateFontString(nil, "ARTWORK")
+	ns.Ink(scrap.text, "QuestFont")
+	scrap.text:SetPoint("TOPLEFT", ability, "TOPRIGHT", 10, 0)
+	scrap.text:SetWidth(360 - 12 - 30 - 10 - 12)
+	scrap.text:SetJustifyH("LEFT")
+	scrap.text:SetSpacing(2)
+end
+
+-- Just your newest open note, nothing about where or when: that's in the
+-- scroll. With the scroll turned off, there's no scrap at all.
+function ns.RefreshScrap()
+	if not scrap then return end
+	scrap:SetShown(ns.ScrollsOn())
+	local last = ns.LastScribble()
+	if last then
+		scrap.text:SetText("|cff7a6142Your last scribble:|r\n" .. ns.OnPaper(last.text))
+	else
+		scrap.text:SetText("Anything to remember for next time? Click the scroll to write it down.")
+	end
+	scrap:SetHeight(math.max(56, scrap.text:GetStringHeight() + 28))
 end
 
 local function ShowWindow(away, ending, test)
@@ -309,6 +334,7 @@ local function ShowWindow(away, ending, test)
 	window.text:SetText(WindowText(away, ending, test))
 	-- Top border, title, text, button, bottom border.
 	window:SetHeight(24 + 24 + 8 + window.text:GetStringHeight() + 16 + 24 + 22)
+	ns.RefreshScrap()
 	window:Show()
 end
 
