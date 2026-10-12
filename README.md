@@ -1,8 +1,9 @@
 # Old People's Toolkit
 
 Tools for old people with responsibilities and sore bones: a "where was I?"
-message at start, automated quiet hours, a stretch reminder, a clock with an
-alarm, and bedtime. With pretend buffs and debuffs.
+message at start, a notebook for things you'll forget, automated quiet hours,
+a stretch reminder, a clock with an alarm, and bedtime. With pretend buffs and
+debuffs.
 
 **Real life, the WoW way.** Your reminders show up as buffs and debuffs, right
 next to your real ones. Sat too long? You get **Stiff Joints** (*"Your old bones
@@ -29,6 +30,21 @@ off in the options, and you can pick your own icons (names from [wowhead.com/ico
   were making. Closed up shop properly? Then there's nothing to remind you of.
 - Fully automatic: it follows the quests you accepted or made progress on, and
   what you looted, gathered or crafted. Nothing to write down. Per character.
+
+### 📜 Scrolls of Remembering
+- A notebook for everything you'll definitely forget: *what is this meat for?*,
+  *someone said Mankrik, go look*, *something weird here, come back some time*.
+- You learn it like a spell. It's tucked in your spellbook: drag it to your
+  action bar to cast it, or type `/oldperson notes`. There's a keybind too.
+- Each note remembers where you were standing. Shift-click a note and a pin on
+  your map takes you back.
+- Shift-click an item to add it, or target someone (a creature, a vendor,
+  another player) to add their name. Hover a creature's name later for its
+  tooltip and a sketch of its face.
+- Done with a note? Click it to cross it out, right-click it to tear it off.
+  No lists to manage.
+- Your last scribble waits under the Where was I? window. The scroll is for
+  your whole account: every character writes in the same one.
 
 ### 🎧 Quiet hours
 - At night (23:00 to 07:00 by default) the game's volume goes down, so you
@@ -76,6 +92,8 @@ Settings live in the options; commands are for doing things.
 |---|---|
 | `/oldperson whereami` | where you are, your quests, and what your bags are filling up with |
 | `/oldperson whereami test` | the welcome-back window, as if you'd been away 3 days |
+| `/oldperson notes` | open your Scrolls of Remembering |
+| `/oldperson notes <anything>` | write it down without opening the scroll |
 | `/oldperson stretch test` | show the stretch pop-up now |
 | `/oldperson stretch done` | I stood up and stretched: start the timer over |
 | `/oldperson alarm 15` | alarm in 15 minutes (or `1h30`) |

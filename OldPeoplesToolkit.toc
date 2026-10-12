@@ -1,8 +1,8 @@
 ## Interface: 16001
 ## Title: Old People's Toolkit
-## Notes: Tools for old people with responsibilities and sore bones: a "where was I?" message at start, automated quiet hours, a stretch reminder, a clock with an alarm, and bedtime. With pretend buffs and debuffs.
+## Notes: Tools for old people with responsibilities and sore bones: a "where was I?" message at start, a notebook for things you'll forget, automated quiet hours, a stretch reminder, a clock with an alarm, and bedtime. With pretend buffs and debuffs.
 ## Author: Floris
-## Version: 0.9.0
+## Version: 0.10.0
 ## IconTexture: Interface\Icons\INV_Misc_PocketWatch_01
 ## SavedVariables: OldPeoplesToolkitDB
 ## AddonCompartmentFunc: OldPeoplesToolkit_OnAddonCompartmentClick
@@ -15,6 +15,9 @@ Stretch.lua
 Bedtime.lua
 QuietHours.lua
 WhereWasI.lua
+Scrolls.lua
+ScrollsCreatures.lua
+ScrollsSpell.lua
 Minimap.lua
 Options.lua
 Commands.lua

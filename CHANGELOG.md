@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.10.0
+
+**New**
+- **Scrolls of Remembering**, a notebook for everything you'll definitely
+  forget: what that meat is for, who someone told you to find, where you saw
+  something odd. You learn it like a spell: it's tucked in your spellbook,
+  you can put it on your action bar, and `/oldperson notes` opens it too.
+  - Each note remembers where you were standing. Shift-click it for a pin on
+    your map.
+  - Shift-click an item to add it, or target someone to add their name. A
+    creature's name shows its tooltip and a sketch of its face.
+  - Click a note to cross it out, right-click it to tear it off.
+  - Your last scribble waits under the **Where was I?** window.
+  - A keybind: Esc › Options › Keybindings › AddOns.
+
 ## 0.9.0
 
 **New**

@@ -1,0 +1,5 @@
+<Bindings>
+	<Binding name="OLDPEOPLESTOOLKIT_SCROLL" header="OLDPEOPLESTOOLKIT" category="ADDONS">
+		OldPeoplesToolkit_ToggleScroll()
+	</Binding>
+</Bindings>

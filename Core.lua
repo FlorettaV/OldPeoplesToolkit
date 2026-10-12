@@ -3,6 +3,8 @@
 --
 -- The tools, one file each:
 --   WhereWasI.lua   after a while away: where you were, your quests and your bags
+--   Scrolls.lua     Scrolls of Remembering, a notebook for things you'll forget
+--                   (with ScrollsCreatures.lua and ScrollsSpell.lua)
 --   QuietHours.lua  turns the volume down at night
 --   Stretch.lua     Old People's Stretch, the stretch reminder
 --   Clock.lua       the clock (and hiding Blizzard's small minimap clock)
@@ -26,6 +28,9 @@ local defaults = {
 	bedtime = { enabled = true, minutes = 23 * 60, weekends = false, showDebuff = true },
 	quiet = { enabled = true, start = 23 * 60, stop = 7 * 60, volume = 25, showBuff = true },
 	whereWasI = { enabled = true, awayHours = 8, characters = {} },
+	-- Also learned (the "You have learned a new spell" line was shown) and
+	-- point (where you dragged the scroll); see Scrolls.lua.
+	scrolls = { enabled = true, notes = {} },
 	icons = {}, -- your own picks for the pretend (de)buffs, see Auras.lua
 	minimapButton = { show = true, angle = 200 },
 }
@@ -170,6 +175,14 @@ function ns.Usable(value)
 	if value == nil then return false end
 	if issecretvalue and issecretvalue(value) then return false end
 	return true
+end
+
+-- Calls a WoW function that may be missing, fail or give a secret value.
+-- Returns its first result, or nil.
+function ns.Safe(fn, ...)
+	if not fn then return nil end
+	local ok, result = pcall(fn, ...)
+	if ok and ns.Usable(result) then return result end
 end
 
 -- A window in the style of Blizzard's dialogs, that you can drag around. The
