@@ -30,6 +30,9 @@ off in the options, and you can pick your own icons (names from [wowhead.com/ico
   were making. Closed up shop properly? Then there's nothing to remind you of.
 - Fully automatic: it follows the quests you accepted or made progress on, and
   what you looted, gathered or crafted. Nothing to write down. Per character.
+- Set it to 0 hours to see it every time you log in. Hopping over to your bank
+  alt? Turn on "Skip an empty window" and there's no window when there's
+  nothing to remind you of.
 
 ### 📜 Scrolls of Remembering
 - A notebook for everything you'll definitely forget: *what is this meat for?*,

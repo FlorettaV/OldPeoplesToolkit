@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.0
+
+The toolkit does what it does, so this is 1.0.
+
+**New**
+- **Where was I?** can greet you every time you log in: set "When I've been
+  away for" to 0. A /reload never counts.
+- New option: **Skip an empty window** (Where was I?). No quests in progress
+  and you weren't farming? Then there's no window, like when you hop over to
+  your bank alt.
+
+**Fixed**
+- Crossing out a note that runs over two lines now crosses out the whole note.
+  The line through the first row no longer runs past the text, and the last
+  words on the second row get crossed out too.
+
 ## 0.10.0
 
 **New**

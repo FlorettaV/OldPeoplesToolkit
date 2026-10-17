@@ -24,7 +24,7 @@ ns.SCROLLS_ICON = "Interface\\Icons\\INV_Scroll_03"
 
 local PER_PAGE = 5
 local WIDTH = 380
-local ROW_HEIGHT = 54
+local ROW_HEIGHT = 54 -- room for two lines, also for a one-line note: equal spacing on purpose
 local CLOSE_AFTER = 1.2 -- seconds the new note stays in view before the scroll rolls up
 
 -- Colors of the scroll. In chat and tooltips it uses the toolkit's (Core.lua).
@@ -244,20 +244,48 @@ local function NoteAt(row)
 	return ns.Notes()[(page - 1) * PER_PAGE + row.index]
 end
 
--- Crossing out: a line of ink through each line of the note.
+-- How wide each line of a note is. The game wraps at a space, so a line is
+-- often shorter than the box, and it doesn't say where it wrapped: we wrap
+-- the text again, word by word, on a hidden copy in the same font.
+local measure
+local function LineWidths(row)
+	local text = row.text
+	if not measure then
+		measure = row:CreateFontString(nil, "ARTWORK")
+		measure:Hide()
+	end
+	measure:SetFont(text:GetFont())
+	local function Width(s)
+		measure:SetText(s)
+		return (measure.GetUnboundedStringWidth and measure:GetUnboundedStringWidth()) or measure:GetStringWidth()
+	end
+	-- What you see: links and colors without their codes.
+	local plain = (text:GetText() or ""):gsub("|H.-|h(.-)|h", "%1"):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
+	local box, widths, line = text:GetWidth(), {}, nil
+	for word in plain:gmatch("%S+") do
+		local longer = line and (line .. " " .. word) or word
+		if line and Width(longer) > box then
+			table.insert(widths, Width(line))
+			line = word
+		else
+			line = longer
+		end
+	end
+	if line then table.insert(widths, Width(line)) end
+	return widths
+end
+
+-- Crossing out: a line of ink through each line of the note, as long as that line.
 local function Strike(row, crossed)
 	local text = row.text
-	local lines = crossed and math.min(text:GetNumLines() or 1, #row.strokes) or 0
-	local width = text:GetWidth()
-	local total = (text.GetUnboundedStringWidth and text:GetUnboundedStringWidth()) or text:GetStringWidth()
+	local widths = crossed and LineWidths(row) or {}
 	local _, size = text:GetFont()
 	local lineHeight = (size or 13) + text:GetSpacing()
 	for i, stroke in ipairs(row.strokes) do
-		if i <= lines then
-			local w = i < lines and width or math.max(20, math.min(width, total - (lines - 1) * width))
+		if widths[i] then
 			stroke:ClearAllPoints()
 			stroke:SetPoint("LEFT", text, "TOPLEFT", -2, -(i - 1) * lineHeight - lineHeight / 2)
-			stroke:SetWidth(w + 4)
+			stroke:SetWidth(math.max(20, math.min(widths[i], text:GetWidth())) + 4)
 			stroke:Show()
 		else
 			stroke:Hide()
