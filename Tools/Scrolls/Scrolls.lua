@@ -8,8 +8,8 @@
 -- shift-click it for a pin on your map. You open the scroll, take your time,
 -- and roll it up again: it never stays on screen while you play.
 --
--- This file: the notes and the scroll window. ScrollsCreatures.lua: your
--- target and its face. ScrollsSpell.lua: the scroll as a "spell" (action bar,
+-- This file: the notes and the scroll window. Creatures.lua: your
+-- target and its face. Spell.lua: the scroll as a "spell" (action bar,
 -- spellbook, "You have learned"). WhereWasI.lua shows your last scribble.
 --
 -- Saved in OldPeoplesToolkitDB.scrolls, for your whole account (you remember

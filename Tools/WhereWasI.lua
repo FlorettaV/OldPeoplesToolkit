@@ -5,7 +5,11 @@
 -- your bags. Under the window, on a scrap of parchment: your last scribble
 -- from the Scrolls of Remembering (Scrolls.lua), if you have one.
 --
--- Saved in OldPeoplesToolkitDB.whereWasI: enabled, awayHours, and per
+-- Set to 0 hours, it's every time you log in. Reloading the UI never counts.
+-- With skipEmpty, there's no window without quests or farming to show:
+-- hopping over to your bank alt doesn't get you an empty one.
+--
+-- Saved in OldPeoplesToolkitDB.whereWasI: enabled, awayHours, skipEmpty, and per
 -- character (by GUID: Forever characters can share a first name):
 --   characters[guid] = { name, lastSeen, zone, subZone, level,
 --                        quests = { [questID] = when you last made progress },
@@ -17,11 +21,12 @@ local SHOW_QUESTS = 3 -- how many recent quests the window lists
 local GAINS_WINDOW = 30 * 60 -- what you gained in the last 30 minutes before logging out
 local GAINS_PICKUPS = 4 -- picked up at least this many separate times, or it's not farming
 local SHOW_ITEMS = 2 -- how many items the window lists
-ns.WHERE_LIMITS = { 1, 48 } -- the options slider: away for 1 to 48 hours
+ns.WHERE_LIMITS = { 0, 48 } -- the options slider: away for 1 to 48 hours, or 0: every time
 
 local char -- this character's saved data
 local awayFor -- seconds since you last played, at this login (nil: first time)
 local lastSession -- when you last played (char.lastSeen at this login)
+local reloaded = false -- this "login" was only /reload
 local lastLog -- the quest log as we last saw it: [questID] = its progress, as text
 local ready = false -- the quest log has had time to load after logging in
 local window, scrap
@@ -329,6 +334,19 @@ function ns.RefreshScrap()
 	scrap:SetHeight(math.max(56, scrap.text:GetStringHeight() + 28))
 end
 
+-- Anything for the window besides "a fresh start" (the scribble doesn't
+-- count: if you use the scroll, there always is one).
+local function SomethingToShow(ending)
+	return #RecentQuests() > 0 or #TopGains(ending) > 0
+end
+
+-- At this login: show the window or not?
+local function Welcome(db)
+	if not db.enabled or not awayFor or reloaded then return false end
+	if awayFor < db.awayHours * 3600 then return false end
+	return not db.skipEmpty or SomethingToShow(lastSession)
+end
+
 local function ShowWindow(away, ending, test)
 	if not window then CreateWindow() end
 	window.text:SetText(WindowText(away, ending, test))
@@ -356,6 +374,7 @@ end
 
 local events = CreateFrame("Frame")
 events:RegisterEvent("PLAYER_LOGIN")
+events:RegisterEvent("PLAYER_ENTERING_WORLD")
 events:RegisterEvent("PLAYER_LOGOUT")
 events:RegisterEvent("QUEST_LOG_UPDATE")
 events:RegisterEvent("QUEST_ACCEPTED")
@@ -363,7 +382,7 @@ events:RegisterEvent("BAG_UPDATE_DELAYED")
 -- Mainline: one pair of events for the bank, mailbox, vendor and so on.
 pcall(events.RegisterEvent, events, "PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
 pcall(events.RegisterEvent, events, "PLAYER_INTERACTION_MANAGER_FRAME_HIDE")
-events:SetScript("OnEvent", function(_, event, arg)
+events:SetScript("OnEvent", function(_, event, arg, arg2)
 	if event == "PLAYER_LOGIN" then
 		local key = UnitGUID("player")
 		local db = OldPeoplesToolkitDB.whereWasI
@@ -377,13 +396,16 @@ events:SetScript("OnEvent", function(_, event, arg)
 		C_Timer.After(5, function()
 			ready = true
 			OnQuestLogChanged()
-			if db.enabled and awayFor and awayFor >= db.awayHours * 3600 then ShowWindow(awayFor, lastSession) end
+			if Welcome(db) then ShowWindow(awayFor, lastSession) end
 			-- The starting count, after the window: it also forgets gains older
 			-- than half an hour, like the ones from last time.
 			OnBagsChanged()
 			RememberWhere()
 		end)
 		C_Timer.NewTicker(60, RememberWhere)
+	elseif event == "PLAYER_ENTERING_WORLD" then
+		-- arg: isInitialLogin, arg2: isReloadingUi. Neither: just a loading screen.
+		if arg or arg2 then reloaded = not arg end
 	elseif event == "PLAYER_LOGOUT" then
 		RememberWhere()
 	elseif event == "BAG_UPDATE_DELAYED" then

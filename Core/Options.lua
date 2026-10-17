@@ -53,7 +53,7 @@ end
 
 local function Minutes(value) return value .. " min" end
 local function Seconds(value) return value .. " sec" end
-local function Hours(value) return value .. " h" end
+local function Hours(value) return value == 0 and "any time" or (value .. " h") end
 local function Percent(value) return value == 0 and "off" or (value .. "%") end
 
 local function Register()
@@ -70,7 +70,10 @@ local function Register()
 		"Helps you remember what you were doing before! After a while away, a window tells you when and "
 			.. "where you last played, your quests, and what your bags were filling up with.")
 	Slider("whereWasI", "awayHours", "When I've been away for", ns.WHERE_LIMITS, 1, Hours,
-		"/oldperson whereami shows it any time.")
+		"At 0: every time you log in. /oldperson whereami shows it any time.")
+	Checkbox("whereWasI", "skipEmpty", "Skip an empty window",
+		"No window when you have no quests in progress and weren't farming, like on your bank alt. "
+			.. "Your last scribble doesn't count.")
 
 	Page("scrolls", "Scrolls of Remembering")
 	Checkbox("scrolls", "enabled", "Enabled",

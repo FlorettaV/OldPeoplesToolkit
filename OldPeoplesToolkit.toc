@@ -7,17 +7,17 @@
 ## SavedVariables: OldPeoplesToolkitDB
 ## AddonCompartmentFunc: OldPeoplesToolkit_OnAddonCompartmentClick
 
-Core.lua
-Auras.lua
-Clock.lua
-Alarm.lua
-Stretch.lua
-Bedtime.lua
-QuietHours.lua
-WhereWasI.lua
-Scrolls.lua
-ScrollsCreatures.lua
-ScrollsSpell.lua
-Minimap.lua
-Options.lua
-Commands.lua
+Core\Core.lua
+Core\Auras.lua
+Tools\Clock\Clock.lua
+Tools\Clock\Alarm.lua
+Tools\Stretch.lua
+Tools\Bedtime.lua
+Tools\QuietHours.lua
+Tools\WhereWasI.lua
+Tools\Scrolls\Scrolls.lua
+Tools\Scrolls\Creatures.lua
+Tools\Scrolls\Spell.lua
+Core\Minimap.lua
+Core\Options.lua
+Core\Commands.lua

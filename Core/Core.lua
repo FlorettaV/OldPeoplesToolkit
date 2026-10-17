@@ -1,16 +1,18 @@
 -- Core: what all the tools share. Chat messages, the saved settings (with
 -- their defaults) and the ways we write times.
 --
--- The tools, one file each:
+-- The tools, in Tools/. A tool with more than one file gets its own folder,
+-- with the tool itself in the file named after it:
 --   WhereWasI.lua   after a while away: where you were, your quests and your bags
---   Scrolls.lua     Scrolls of Remembering, a notebook for things you'll forget
---                   (with ScrollsCreatures.lua and ScrollsSpell.lua)
+--   Scrolls/        Scrolls of Remembering, a notebook for things you'll forget
+--                   (Scrolls.lua, with Creatures.lua and Spell.lua)
 --   QuietHours.lua  turns the volume down at night
 --   Stretch.lua     Old People's Stretch, the stretch reminder
---   Clock.lua       the clock (and hiding Blizzard's small minimap clock)
---   Alarm.lua       "I've got 15 minutes" / "I can play until 22:30"
+--   Clock/          Clock.lua: the clock (and hiding Blizzard's small minimap
+--                   clock). Alarm.lua: "I've got 15 minutes" / "I can play
+--                   until 22:30"
 --   Bedtime.lua     a heads-up and "Past Your Bedtime" on work nights
--- Shared by them:
+-- Shared by them, in Core/ with this file:
 --   Auras.lua    pretend buffs and debuffs next to your real ones
 --   Minimap.lua, Options.lua, Commands.lua
 
@@ -27,7 +29,7 @@ local defaults = {
 	-- over 1440 means after midnight (1470 = 00:30).
 	bedtime = { enabled = true, minutes = 23 * 60, weekends = false, showDebuff = true },
 	quiet = { enabled = true, start = 23 * 60, stop = 7 * 60, volume = 25, showBuff = true },
-	whereWasI = { enabled = true, awayHours = 8, characters = {} },
+	whereWasI = { enabled = true, awayHours = 8, skipEmpty = false, characters = {} },
 	-- Also learned (the "You have learned a new spell" line was shown) and
 	-- point (where you dragged the scroll); see Scrolls.lua.
 	scrolls = { enabled = true, notes = {} },
